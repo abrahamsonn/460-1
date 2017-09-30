@@ -80,28 +80,33 @@ void process_file(FILE* file_p, job* job_array)
     while ( fgets(line, sizeof(line), file_p) ) {
 
         /* Iterate across the line, storing the values in arrival_time and process_time */
-        int arrival_time, process_time;
+        int arrival_time = 0, process_time = 0;
         char number_buffer[16];
-        for (int i = 0; i < sizeof(line); i++) {
-            /* If the loop isn't on a space, assign that char to the char in number_buffer */
-            /* If it is, then convert the number in number_buffer to an int (atoi) and  *
-             * then clear out number_buffer.                                            */
-            /* How to keep track of which number is which?                              */
+        memset(number_buffer, 0, sizeof(number_buffer));
+
+        /* First loop obtains arrival_time */
+        int i;
+        for (i = 0; i < sizeof(line); i++) {
             if ( line[i] != ' ' ) {
                 number_buffer[i] = line[i];
             } else {
-                /* atoi doesn't really work without this line */
-                number_buffer[sizeof(number_buffer) - 1] = '\0';
-
-                /* Determine which variable to store the number in */
-                if ( line[i] == ' ' ) {
-                    arrival_time = atoi(number_buffer);
-                } else {
-                    process_time = atoi(number_buffer);
-                }
-                /* clear out number_buffer for finding the next number */
-                memset(number_buffer, 0, sizeof(number_buffer));
+                arrival_time = atoi(number_buffer);
+                break;
             }
+        }
+
+        memset(number_buffer, 0, sizeof(number_buffer));
+
+        int j = 0;
+        /* Second loop obtains process_time */
+        for (i = i + 1; i < sizeof(line); i++) {
+            if ( line[i] != '\0' ) {
+                number_buffer[j] = line[i];
+            } else {
+                process_time = atoi(number_buffer);
+                break;
+            }
+            j++;
         }
 
         /* job at index line_number will now have id, arrival_time, and process_time. */
