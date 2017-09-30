@@ -6,6 +6,8 @@
 /* ints are how i'll keep track of whether or not the first and second processors are busy. */
 static int processor1_busy = 0;
 static int processor2_busy = 0;
+static int processor3_busy = 0;
+static int processor4_busy = 0;
 
 /* Job struct */
 typedef struct {
@@ -28,36 +30,22 @@ int main(void)
         job_array[i].id = i + 1;
     }
 
-    /* I'm eventually going to just read in a CSV or other file and update the jobs that way    *
-     * with a for loop in the future                                                            */
     FILE* file_p = fopen("input.txt", "r");
-    process_file(file_p, job_array);
+    process_file(file_p, job_array); /* Fills job_array with the info from input.txt */
     fclose(file_p);
 
-    /* Variable setup for the loop that simulates a processor waiting for jobs. */
-//    time_t start_time;
-//    time(&start_time);
-//    time_t x;
-//    time_t current_time;
-//    i = 0;
-//    int number_processed = 0;
+    /* IDEA: use goto statements to simulate each processor */
+    for (int i = 0; ; i++) {
 
-    /* simulate a processor (loop forever, waiting for jobs ) */
-    /* (pretend each loop iteration is a millisecond) */
-//    for ( ; ; ) {   /* NOTE: I treat each iteration of the loop as a micro-second */
-//
-//        if ( number_processed == 12 ) {
-//            break;      /* Stop running, all jobs have been passed. */
-//        }
-//
-//        /* If the current system time is */
-//        if (job_array[i].arrival >= (int) current_time) {
-//            run(job_array[i]);
-//        } else {
-//            continue;
-//        }
-//        i++;
-//    }
+        processor1:
+
+        processor2:
+
+        processor3:
+
+        processor4:
+
+    }
 
     return 0;
 }
@@ -68,8 +56,6 @@ void update_job(job* job, int id_in, int arrival_time, int processing_time)
     job->id = id_in;
     job->arrival = arrival_time;
     job->processing = processing_time;
-
-    printf("JOB ID: %d\tARRIVAL: %d\tPROCESSING: %d\n", job->id, job->arrival, job->processing);
 }
 
 void process_file(FILE* file_p, job* job_array)
