@@ -1,6 +1,5 @@
 # Assignment 1
-## Alex Abrahamson
-## 2 October 2017
+## Alex Abrahamson - 10/2/17
 
 This is the programming assignment 1 written by Alex Abrahamson
 
