@@ -3,49 +3,113 @@
 #include <string.h>
 #include <time.h>
 
-/* ints are how i'll keep track of whether or not the first and second processors are busy. */
-static int processor1_busy = 0;
-static int processor2_busy = 0;
-static int processor3_busy = 0;
-static int processor4_busy = 0;
+int file_size = 0;
 
 /* Job struct */
 typedef struct {
     int id;
     int arrival;
     int processing;
+    int remaining;
+    int finish;
 } job;
 
 /* Function prototypes */
 void update_job(job* job, int id, int arrival, int processing);
 void process_file(FILE* file_p, job* job_array);
+void print_stats(job* job_in);
 
 
-int main(void)
+int main(int argc, char* argv[])
 {
-    job job_array[12];
-    
+    /* Instance variables */
     int i;
-    for (i = 0; i < 12; i++) {
-        job_array[i].id = i + 1;
+    int job_counter = 0;
+
+    char* filename = argv[1];
+    FILE* file_p = fopen(filename, "r");
+
+    job job_array[50];
+
+    /* Program argument checking */
+    if (argc != 2) {
+        printf("ffs\n");
+        return 0;
     }
 
-    FILE* file_p = fopen("input.txt", "r");
+    /* Update each job with info from the .txt file */
     process_file(file_p, job_array); /* Fills job_array with the info from input.txt */
     fclose(file_p);
 
-    /* IDEA: use goto statements to simulate each processor */
-    for (int i = 0; ; i++) {
+    /* Loop until a break is executed (will happen when all jobs are done) */
+    for (i = 0; ; i++) {
 
-        processor1:
+        /* RR */
 
-        processor2:
+        /* Cycle back to 0 if job_counter is out of range */
+        if (job_counter >= file_size) {
+            job_counter = 0;
+        }
 
-        processor3:
+        /* If the arrival time still hasn't passed, then continue */
+        if (job_array[job_counter].arrival > i) {
+            continue;
+        }
 
-        processor4:
+        /* Check to see if all jobs are done */
+        int j;
+        int number_completed = 0;
+        for (j = 0; j < file_size; j++) {
+            if (job_array[j].remaining <= 0) {
+                number_completed++;
+            }
+        }
+        if (number_completed >= file_size) {
+            printf("\nall jobs completed\n\n");
+            break;
+        }
 
+        /* If the job is done, then continue. This iteration never happened. */
+        if (job_array[job_counter].remaining <= 0) {
+            job_counter++;
+            i--;
+            continue;
+        }
+
+        /* If 0 < remaining time < slice time */
+        if (job_array[job_counter].remaining < 4 && job_array[job_counter].remaining > 0) {
+            i += job_array[job_counter].remaining; /* The loop incrementing function handles 1µs */
+            job_array[job_counter].remaining = 0;
+            job_array[job_counter].finish = i;
+            job_counter++;
+            continue;
+        }
+        /* If remaining time == 4 */
+        else if (job_array[job_counter].remaining == 4) {
+            i += job_array[job_counter].remaining;
+            job_array[job_counter].remaining = 0;
+            job_array[job_counter].finish = i;
+            job_counter++;
+            continue;
+        /* If remaining time > 4 */
+        } else if (job_array[job_counter].remaining > 4) {
+            i += 3; /* would be 4 but the loop incrementing function handles 4 */
+            job_array[job_counter].remaining -= 4;
+            job_counter++;
+            continue;
+        }
     }
+
+    for (i = 0; i < file_size; i++) {
+        print_stats(&job_array[i]);
+    }
+
+    int sum = 0;
+    for (i = 0; i < file_size; i++) {
+        sum += (job_array[i].finish - job_array[i].arrival);
+    }
+    sum = sum / (file_size + 1);
+    printf("\nAverage turnaround time : %d\n\n", sum);
 
     return 0;
 }
@@ -56,6 +120,7 @@ void update_job(job* job, int id_in, int arrival_time, int processing_time)
     job->id = id_in;
     job->arrival = arrival_time;
     job->processing = processing_time;
+    job->remaining = processing_time;
 }
 
 void process_file(FILE* file_p, job* job_array)
@@ -101,4 +166,15 @@ void process_file(FILE* file_p, job* job_array)
         line_number++;
 
     }
+
+    file_size = line_number;
+}
+
+void print_stats(job* job_in)
+{
+    printf("JOB # %d\n", job_in->id);
+    printf("Arrival time    : %d\n", job_in->arrival);
+    printf("Service time    : %d\n", job_in->processing);
+    printf("Finish time     : %d\n", job_in->finish);
+    printf("Turnaround time : %d\n", (job_in->finish - job_in->arrival));
 }
