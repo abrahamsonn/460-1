@@ -25,11 +25,12 @@ int main(int argc, char* argv[])
     /* Instance variables */
     int i;
     int job_counter = 0;
+    int p0_busy = 0, p1_busy = 0, p2_busy = 0, p3_busy = 0;
 
     char* filename = argv[1];
     FILE* file_p = fopen(filename, "r");
 
-    job job_array[50];
+    job job_array[1000];
 
     /* Program argument checking */
     if (argc != 2) {
@@ -43,8 +44,6 @@ int main(int argc, char* argv[])
 
     /* Loop until a break is executed (will happen when all jobs are done) */
     for (i = 0; ; i++) {
-
-        /* RR */
 
         /* Cycle back to 0 if job_counter is out of range */
         if (job_counter >= file_size) {
@@ -104,12 +103,12 @@ int main(int argc, char* argv[])
         print_stats(&job_array[i]);
     }
 
-    int sum = 0;
+    long long unsigned sum = 0;
     for (i = 0; i < file_size; i++) {
         sum += (job_array[i].finish - job_array[i].arrival);
     }
     sum = sum / (file_size + 1);
-    printf("\nAverage turnaround time : %d\n\n", sum);
+    printf("\nAverage turnaround time : %llu\n\n", sum);
 
     return 0;
 }
