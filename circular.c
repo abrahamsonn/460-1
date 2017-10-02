@@ -14,18 +14,20 @@ typedef struct {
     int finish;
 } job;
 
+
+
 /* Function prototypes */
 void update_job(job* job, int id, int arrival, int processing);
 void process_file(FILE* file_p, job* job_array);
 void print_stats(job* job_in);
 
 
+
 int main(int argc, char* argv[])
 {
     /* Instance variables */
     int i;
-    int job_counter = 0;
-    int p0_busy = 0, p1_busy = 0, p2_busy = 0, p3_busy = 0;
+    int job_counter = 0, job_counter2 = 1, job_counter3 = 2, job_counter4 = 3;
 
     char* filename = argv[1];
     FILE* file_p = fopen(filename, "r");
@@ -55,7 +57,7 @@ int main(int argc, char* argv[])
             continue;
         }
 
-        /* Check to see if all jobs are done */
+        /* Check to see if all jobs are done, and if so break */
         int j;
         int number_completed = 0;
         for (j = 0; j < file_size; j++) {
@@ -110,8 +112,12 @@ int main(int argc, char* argv[])
     sum = sum / (file_size + 1);
     printf("\nAverage turnaround time : %llu\n\n", sum);
 
+    printf("(Time is measured in ticks)\n");
+
     return 0;
 }
+
+
 
 /* Manually update the job passed to the function */
 void update_job(job* job, int id_in, int arrival_time, int processing_time)
@@ -177,3 +183,4 @@ void print_stats(job* job_in)
     printf("Finish time     : %d\n", job_in->finish);
     printf("Turnaround time : %d\n", (job_in->finish - job_in->arrival));
 }
+

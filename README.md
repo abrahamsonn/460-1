@@ -8,7 +8,7 @@ To invoke the **circular** executable, simply perform the following:
 ```
 $ ./circular input.txt
 ```
-Where input.txt is a properly formatted (for **circular**) .txt file.
+Where input.txt is a properly formatted (for **circular**) .txt file. The contents of **input.txt** are the table from the assignment description.
 
 ### Compiling (not really necessary)
 If the provided **circular** executable does not work/run, then compile **circular.c** with 
