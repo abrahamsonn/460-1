@@ -26,8 +26,8 @@ void print_stats(job* job_in);
 int main(int argc, char* argv[])
 {
     /* Instance variables */
-    int i;
-    int job_counter = 0, job_counter2 = 1, job_counter3 = 2, job_counter4 = 3;
+    int i = 0;
+    int job_counter = 0;
 
     char* filename = argv[1];
     FILE* file_p = fopen(filename, "r");
